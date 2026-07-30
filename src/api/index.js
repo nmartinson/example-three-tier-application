@@ -53,6 +53,32 @@ app.patch('/tasks/:id', async (req, res) => {
   res.json(updated[0]);
 });
 
+// GET /states — list all US states
+app.get('/states', async (_req, res) => {
+  try {
+    const { rows } = await db.query('SELECT * FROM states ORDER BY name ASC');
+    res.json(rows);
+  } catch (error) {
+    console.error('Error fetching states:', error);
+    res.status(500).json({ error: 'Failed to fetch states' });
+  }
+});
+
+// GET /states/:id — get a specific state
+app.get('/states/:id', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    const { rows } = await db.query('SELECT * FROM states WHERE id = $1', [id]);
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'State not found' });
+    }
+    res.json(rows[0]);
+  } catch (error) {
+    console.error('Error fetching state:', error);
+    res.status(500).json({ error: 'Failed to fetch state' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`API listening on port ${PORT}`);
 });

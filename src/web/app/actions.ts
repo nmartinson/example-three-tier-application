@@ -11,6 +11,15 @@ export type Task = {
   created_at: string;
 };
 
+export type State = {
+  id: number;
+  name: string;
+  abbreviation: string;
+  latitude: number;
+  longitude: number;
+  created_at: string;
+};
+
 export async function getTasks(): Promise<Task[]> {
   const res = await fetch(`${API_URL}/tasks`, { cache: 'no-store' });
   if (!res.ok) throw new Error('Failed to fetch tasks');
@@ -34,4 +43,16 @@ export async function toggleTask(id: number, completed: boolean) {
     body: JSON.stringify({ completed }),
   });
   revalidatePath('/');
+}
+
+export async function getStates(): Promise<State[]> {
+  const res = await fetch(`${API_URL}/states`, { cache: 'no-store' });
+  if (!res.ok) throw new Error('Failed to fetch states');
+  return res.json();
+}
+
+export async function getState(id: number): Promise<State> {
+  const res = await fetch(`${API_URL}/states/${id}`, { cache: 'no-store' });
+  if (!res.ok) throw new Error('Failed to fetch state');
+  return res.json();
 }
